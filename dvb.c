@@ -653,8 +653,12 @@ static fe_guard_interval_t GetGuard(void)
         case 16: return GUARD_INTERVAL_1_16;
         case  8: return GUARD_INTERVAL_1_8;
         case  4: return GUARD_INTERVAL_1_4;
+        case 128  : return GUARD_INTERVAL_1_128;  // DVB-T2
+        case 19128: return GUARD_INTERVAL_19_128; // DVB-T2
+        case 19256: return GUARD_INTERVAL_19_256; // DVB-T2
         default:
             msg_Warn( NULL, "invalid guard interval %d", i_guard );
+        case -2: // DVB-T2 hint
         case -1:
         case  0: return GUARD_INTERVAL_AUTO;
     }
@@ -669,8 +673,11 @@ static fe_transmit_mode_t GetTransmission(void)
 #ifdef TRANSMISSION_MODE_4K
         case 4: return TRANSMISSION_MODE_4K;
 #endif
+        case 16: return TRANSMISSION_MODE_16K; // DVB-T2
+        case 32: return TRANSMISSION_MODE_32K; // DVB-T2
         default:
             msg_Warn( NULL, "invalid tranmission mode %d", i_transmission );
+        case -2: // DVB-T2 hint
         case -1:
         case 0: return TRANSMISSION_MODE_AUTO;
     }
@@ -819,6 +826,26 @@ static struct dtv_properties dvbt_cmdseq = {
     .props = dvbt_cmdargs
 };
 
+static struct dtv_property dvbt2_cmdargs[] = {
+    { .cmd = DTV_FREQUENCY,       .u.data = 0 },
+    { .cmd = DTV_MODULATION,      .u.data = QAM_AUTO },
+    { .cmd = DTV_INVERSION,       .u.data = INVERSION_AUTO },
+    { .cmd = DTV_BANDWIDTH_HZ,    .u.data = 8000000 },
+    { .cmd = DTV_CODE_RATE_HP,    .u.data = FEC_AUTO },
+    { .cmd = DTV_CODE_RATE_LP,    .u.data = FEC_AUTO },
+    { .cmd = DTV_GUARD_INTERVAL,  .u.data = GUARD_INTERVAL_AUTO },
+    { .cmd = DTV_TRANSMISSION_MODE,.u.data = TRANSMISSION_MODE_AUTO },
+    { .cmd = DTV_HIERARCHY,       .u.data = HIERARCHY_AUTO },
+    { .cmd = DTV_DVBT2_PLP_ID,    .u.data = 0 },
+    { .cmd = DTV_DELIVERY_SYSTEM, .u.data = SYS_DVBT2 },
+    { .cmd = DTV_TUNE },
+};
+static struct dtv_properties dvbt2_cmdseq = {
+    .num = sizeof(dvbt2_cmdargs)/sizeof(struct dtv_property),
+    .props = dvbt2_cmdargs
+};
+
+
 static struct dtv_property atsc_cmdargs[] = {
     { .cmd = DTV_FREQUENCY, .u.data = 0 },
     { .cmd = DTV_MODULATION, .u.data = QAM_AUTO },
@@ -843,6 +870,7 @@ static struct dtv_properties atsc_cmdseq = {
 #define TRANSMISSION 7
 #define ROLLOFF 7
 #define HIERARCHY 8
+#define PLP_ID 9
 
 struct dtv_property pclear[] = {
     { .cmd = DTV_CLEAR },
@@ -877,7 +905,14 @@ static void FrontendSet( bool b_init )
     switch ( info.type )
     {
     case FE_OFDM:
-        p = &dvbt_cmdseq;
+        if ( i_guard == -2 || i_guard >= 128 || i_transmission == -2 || i_transmission >= 16 )
+        {
+            p = &dvbt2_cmdseq;
+            p->props[PLP_ID].u.data = 0;
+        }
+        else
+            p = &dvbt_cmdseq;
+
         p->props[FREQUENCY].u.data = i_frequency;
         p->props[INVERSION].u.data = GetInversion();
         if ( psz_modulation != NULL )

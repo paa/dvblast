@@ -470,8 +470,12 @@ void usage()
     msg_Raw( NULL, "  -K --fec-lp           DVB-T low priority FEC (default auto)" );
     msg_Raw( NULL, "  -G --guard            DVB-T guard interval" );
     msg_Raw( NULL, "    DVB-T  32 (1/32)|16 (1/16)|8 (1/8)|4 (1/4)|-1 (auto, default)" );
+    msg_Raw( NULL, "    DVB-T2 32 (1/32)|16 (1/16)|8 (1/8)|4 (1/4)|-2 (auto, default)" );
+    msg_Raw( NULL, "    DVB-T2 128 (1/128)|19128 (19/128)|19256 (19/256)|-2 (auto, default)" );
     msg_Raw( NULL, "  -H --hierarchy        DVB-T hierarchy (0, 1, 2, 4 or -1 auto, default)" );
-    msg_Raw( NULL, "  -X --transmission     DVB-T transmission (2, 4, 8 or -1 auto, default)" );
+    msg_Raw( NULL, "  -X --transmission     DVB-T transmission mode" );
+    msg_Raw( NULL, "    DVB-T  2, 4, 8 (default: -1 = auto)" );
+    msg_Raw( NULL, "    DVB-T2 2, 4, 8, 16, 32 (default: -2 = auto)" );
     msg_Raw( NULL, "  -s --symbol-rate" );
     msg_Raw( NULL, "  -S --diseqc           satellite number for diseqc (0: no diseqc, 1-4, A or B)" );
     msg_Raw( NULL, "  -u --budget-mode      turn on budget mode (no hardware PID filtering)" );
