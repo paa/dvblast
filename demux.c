@@ -2184,6 +2184,7 @@ static void HandlePMT( uint16_t i_pid, uint8_t *p_pmt, mtime_t i_dts )
             if ( desc_get_tag( p_desc ) != 0x09 || !desc09_validate( p_desc ) )
                 continue;
             SelectPID( i_sid, desc09_get_pid( p_desc ) );
+            msg_Warn( NULL, "%s:%d SelectPID(0x%03x)\n", __func__, __LINE__, desc09_get_pid( p_desc ) );
         }
     }
 
@@ -2213,6 +2214,7 @@ static void HandlePMT( uint16_t i_pid, uint8_t *p_pmt, mtime_t i_dts )
                 if ( desc_get_tag( p_desc ) != 0x09 || !desc09_validate( p_desc ) )
                     continue;
                 SelectPID( i_sid, desc09_get_pid( p_desc ) );
+                msg_Warn( NULL, "%s:%d SelectPID(0x%03x)\n", __func__, __LINE__, desc09_get_pid( p_desc ) );
             }
         }
     }
@@ -2226,8 +2228,10 @@ static void HandlePMT( uint16_t i_pid, uint8_t *p_pmt, mtime_t i_dts )
             {
                 if ( desc_get_tag( p_desc ) != 0x09 || !desc09_validate( p_desc ) )
                     continue;
-                if ( ca_desc_find( pmt_get_descs(p_pmt) + DESCS_HEADER_SIZE, descs_get_length(pmt_get_descs(p_pmt)), desc09_get_pid( p_desc ) ) == NULL )
+                if ( ca_desc_find( pmt_get_descs(p_pmt) + DESCS_HEADER_SIZE, descs_get_length(pmt_get_descs(p_pmt)), desc09_get_pid( p_desc ) ) == NULL ) {
                     UnselectPID( i_sid, desc09_get_pid( p_desc ) );
+                    msg_Warn( NULL, "%s:%d UnselectPID(0x%03x)\n", __func__, __LINE__, desc09_get_pid( p_desc ) );
+                }
             }
         }
 
@@ -2263,8 +2267,10 @@ static void HandlePMT( uint16_t i_pid, uint8_t *p_pmt, mtime_t i_dts )
                         continue;
                     while ( (p_pmt_es = pmt_get_es( p_pmt, f++ )) != NULL )
                     {
-                        if ( ca_desc_find( pmtn_get_descs( p_pmt_es ) + DESCS_HEADER_SIZE, descs_get_length( pmtn_get_descs( p_pmt_es ) ), desc09_get_pid( p_desc ) ) == NULL )
+                        if ( ca_desc_find( pmtn_get_descs( p_pmt_es ) + DESCS_HEADER_SIZE, descs_get_length( pmtn_get_descs( p_pmt_es ) ), desc09_get_pid( p_desc ) ) == NULL ) {
                             UnselectPID( i_sid, desc09_get_pid( p_desc ) );
+                            msg_Warn( NULL, "%s:%d UnselectPID(0x%03x)\n", __func__, __LINE__, desc09_get_pid( p_desc ) );
+                        }
                     }
                 }
             }
