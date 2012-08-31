@@ -114,6 +114,10 @@ static int i_ttl_global = 64;
 /* TPS Input log filename */
 char * psz_mrtg_file = NULL;
 
+/* PID mapping */
+bool b_do_remap = false;
+uint16_t pi_newpids[ N_MAP_PIDS ];  /* pmt, audio, video, spu */
+
 void (*pf_Open)( void ) = NULL;
 block_t * (*pf_Read)( mtime_t i_poll_timeout ) = NULL;
 void (*pf_Reset)( void ) = NULL;
@@ -545,7 +549,7 @@ int main( int i_argc, char **pp_argv )
         usage();
 
     /*
-     * The only short options left are: y0123456789
+     * The only short options left are: 0123456789
      * Use them wisely.
      */
     static const struct option long_options[] =
@@ -601,10 +605,11 @@ int main( int i_argc, char **pp_argv )
         { "help",            no_argument,       NULL, 'h' },
         { "version",         no_argument,       NULL, 'V' },
         { "mrtg-file",       required_argument, NULL, 'Z' },
+        { "pidmap",          required_argument, NULL, 'y' },
         { 0, 0, 0, 0 }
     };
 
-    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:f:F:R:s:S:k:v:pb:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:", long_options, NULL)) != -1 )
+    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:f:F:R:s:S:k:v:pb:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:y:", long_options, NULL)) != -1 )
     {
         switch ( c )
         {
@@ -872,6 +877,28 @@ int main( int i_argc, char **pp_argv )
             psz_mrtg_file = optarg;
             break;
 
+        case 'y': {
+            /* We expect a comma separated list of numbers.
+               Put them into the pi_newpids array as they appear */
+            char *str1;
+            char *saveptr = NULL;
+            char *tok = NULL;
+            int i, i_newpid;
+            for (i = 0, str1 = optarg; i < N_MAP_PIDS; i++, str1 = NULL)
+            {
+                tok = strtok_r(str1, ",", &saveptr);
+                if ( !tok )
+                    break;
+                i_newpid = strtoul(tok, NULL, 0);
+                if ( !i_newpid ) {
+                     msg_Err( NULL, "Invalid pidmap string" );
+                     usage();
+                }
+                pi_newpids[i] = i_newpid;
+            }
+            b_do_remap = true;
+            break;
+        }
         case 'h':
         default:
             usage();
