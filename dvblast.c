@@ -457,7 +457,7 @@ void usage()
         "[-u] [-w] [-U] [-L <latency>] [-E <retention>] [-d <dest IP>[<:port>][/<opts>]*] "
         "[-z] [-C [-e] [-M <network name] [-N <network ID>]] [-T] [-j <system charset>] "
         "[-W] [-Y] [-l] [-g <logger ident>] [-Z <mrtg file>] [-V] [-h] [-B <provider_name>]"
-        "[-J <DVB charset>] [-Q <quit timeout>] [-x <text|xml>]" );
+        "[-J <DVB charset>] [-Q <quit timeout>] [-y pid_mapping] [-x <text|xml>]" );
 
     msg_Raw( NULL, "Input:" );
 #ifdef HAVE_ASI_SUPPORT
@@ -512,6 +512,7 @@ void usage()
     msg_Raw( NULL, "  -t --ttl <ttl>        TTL of the output stream" );
     msg_Raw( NULL, "  -T --unique-ts-id     generate random unique TS ID for each output" );
     msg_Raw( NULL, "  -U --udp              use raw UDP rather than RTP (required by some IPTV set top boxes)" );
+    msg_Raw( NULL, "  -y --pidmap <pmt_pid,audio_pid,video_pid,spu_pid>");
     msg_Raw( NULL, "  -z --any-type         pass through all ESs from the PMT, of any type" );
 
     msg_Raw( NULL, "Misc:" );
