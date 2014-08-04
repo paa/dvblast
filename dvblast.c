@@ -64,6 +64,9 @@ int i_fenum = 0;
 int i_canum = 0;
 char *psz_delsys = NULL;
 int i_frequency = 0;
+int i_lnb1 = 9750;
+int i_lnb2 = 10600;
+int i_lnbs = 11700;
 int i_inversion = -1;
 int i_srate = 27500000;
 int i_fec = 999;
@@ -526,6 +529,9 @@ void usage()
     msg_Raw( NULL, "    DVB-S2 qpsk|psk_8 (default legacy DVB-S)" );
     msg_Raw( NULL, "  -n --frontend-number <frontend number>" );
     msg_Raw( NULL, "  -p --force-pulse      force 22kHz pulses for high-band selection (DVB-S)" );
+    msg_Raw( NULL, "  -7 --lnb1 <frequency> LNB 1 frequency in Mhz (default 9750)" );
+    msg_Raw( NULL, "  -8 --lnb2 <frequency> LNB 2 frequency in Mhz (default 10600)" );
+    msg_Raw( NULL, "  -9 --lnbs <frequency> LNB switch frequency in Mhz (default 11700)" );
     msg_Raw( NULL, "  -P --pilot            DVB-S2 Pilot (-1 auto, 0 off, 1 on)" );
     msg_Raw( NULL, "  -R --rolloff          DVB-S2 Rolloff value" );
     msg_Raw( NULL, "    DVB-S2 35=0.35|25=0.25|20=0.20|0=AUTO (default: 35)" );
@@ -661,10 +667,13 @@ int main( int i_argc, char **pp_argv )
         { "ca-number",       required_argument, NULL, 'y' },
         { "pidmap",          required_argument, NULL, '0' },
         { "dvr-buf-size",    required_argument, NULL, '2' },
+        { "lnb1",            required_argument, NULL, '7' },
+        { "lnb2",            required_argument, NULL, '8' },
+        { "lnbs",            required_argument, NULL, '9' },
         { 0, 0, 0, 0 }
     };
 
-    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:5:f:F:R:s:S:k:v:pb:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:y:0:1:2:", long_options, NULL)) != -1 )
+    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:5:f:F:R:s:S:k:v:pb:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:y:0:1:2:7:8:9:", long_options, NULL)) != -1 )
     {
         switch ( c )
         {
@@ -781,6 +790,18 @@ int main( int i_argc, char **pp_argv )
 
         case 'p':
             b_tone = 1;
+            break;
+
+        case '7':
+            i_lnb1 = strtol( optarg, NULL, 0 );
+            break;
+
+        case '8':
+            i_lnb2 = strtol( optarg, NULL, 0 );
+            break;
+
+        case '9':
+            i_lnbs = strtol( optarg, NULL, 0 );
             break;
 
         case 'b':

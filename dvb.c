@@ -478,17 +478,17 @@ static int FrontendDoDiseqc(void)
         msg_Dbg( NULL, "frequency %d is in C-band (higher)", i_frequency );
         bis_frequency = 5950000 - i_frequency;
     }
-    else if ( i_frequency >= 10700000 && i_frequency < 11700000 )
+    else if ( i_frequency >= 10700000 && i_frequency < i_lnbs * 1000 )
     {
         msg_Dbg( NULL, "frequency %d is in Ku-band (lower)",
                  i_frequency );
-        bis_frequency = i_frequency - 9750000;
+        bis_frequency = i_frequency - i_lnb1 * 1000;
     }
-    else if ( i_frequency >= 11700000 && i_frequency <= 13250000 )
+    else if ( i_frequency >= i_lnbs * 1000 && i_frequency <= 13250000 )
     {
         msg_Dbg( NULL, "frequency %d is in Ku-band (higher)",
                  i_frequency );
-        bis_frequency = i_frequency - 10600000;
+        bis_frequency = i_frequency - i_lnb2 * 1000;
         fe_tone = SEC_TONE_ON;
     }
     else
