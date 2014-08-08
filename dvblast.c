@@ -257,14 +257,12 @@ bool config_ParseHost( output_config_t *p_config, char *psz_string )
             p_config->i_if_index_v6 = strtol( ARG_OPTION("ifindex="), NULL, 0 );
         else if ( IS_OPTION("srvname=")  )
         {
-            if ( p_config->psz_service_name )
-                free( p_config->psz_service_name );
+            free( p_config->psz_service_name );
             p_config->psz_service_name = config_stropt( ARG_OPTION("srvname=") );
         }
         else if ( IS_OPTION("srvprovider=") )
         {
-            if ( !p_config->psz_service_provider )
-                free( p_config->psz_service_provider );
+            free( p_config->psz_service_provider );
             p_config->psz_service_provider = config_stropt( ARG_OPTION("srvprovider=") );
         }
         else if ( IS_OPTION("srcaddr=") )
@@ -273,8 +271,7 @@ bool config_ParseHost( output_config_t *p_config, char *psz_string )
                 msg_Err( NULL, "RAW sockets currently implemented for ipv4 only");
                 return false;
             }
-            if ( !p_config->psz_srcaddr )
-                free( p_config->psz_srcaddr );
+            free( p_config->psz_srcaddr );
             p_config->psz_srcaddr = config_stropt( ARG_OPTION("srcaddr=") );
             p_config->i_config |= OUTPUT_RAW;
         }
@@ -297,13 +294,12 @@ bool config_ParseHost( output_config_t *p_config, char *psz_string )
                 if ( !tok )
                     break;
                 i_newpid = strtoul(tok, NULL, 0);
-                if ( !i_newpid ) {
-                     msg_Warn( NULL, "Invalid output pidmap setting" );
-                }
                 p_config->pi_confpids[i] = i_newpid;
             }
             p_config->b_do_remap = true;
         }
+        else if ( IS_OPTION("newsid=") )
+            p_config->i_new_sid = strtol( ARG_OPTION("newsid="), NULL, 0 );
         else
             msg_Warn( NULL, "unrecognized option %s", psz_string );
 
@@ -849,7 +845,7 @@ int main( int i_argc, char **pp_argv )
             break;
 
         case 'w':
-            b_select_pmts = 1; //!b_select_pmts;
+            b_select_pmts = !b_select_pmts;
             break;
 
         case 'U':
