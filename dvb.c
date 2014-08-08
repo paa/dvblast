@@ -455,6 +455,8 @@ static int FrontendDoDiseqc(void)
         case 18: fe_voltage = SEC_VOLTAGE_18; break;
     }
 
+    fe_tone = SEC_TONE_OFF;
+
     /* Automatic mode. */
     if ( i_frequency >= 950000 && i_frequency <= 2150000 )
     {
