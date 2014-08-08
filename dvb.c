@@ -455,8 +455,6 @@ static int FrontendDoDiseqc(void)
         case 18: fe_voltage = SEC_VOLTAGE_18; break;
     }
 
-    fe_tone = b_tone ? SEC_TONE_ON : SEC_TONE_OFF;
-
     /* Automatic mode. */
     if ( i_frequency >= 950000 && i_frequency <= 2150000 )
     {
@@ -483,13 +481,14 @@ static int FrontendDoDiseqc(void)
         msg_Dbg( NULL, "frequency %d is in Ku-band (lower)",
                  i_frequency );
         bis_frequency = i_frequency - i_lnb1 * 1000;
+        fe_tone = b_tone == 1 ? SEC_TONE_ON : SEC_TONE_OFF;
     }
     else if ( i_frequency >= i_lnbs * 1000 && i_frequency <= 13250000 )
     {
         msg_Dbg( NULL, "frequency %d is in Ku-band (higher)",
                  i_frequency );
         bis_frequency = i_frequency - i_lnb2 * 1000;
-        fe_tone = SEC_TONE_ON;
+        fe_tone = b_tone == 0 ? SEC_TONE_OFF : SEC_TONE_ON;
     }
     else
     {

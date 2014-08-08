@@ -74,7 +74,7 @@ int i_rolloff = 35;
 int i_satnum = 0;
 int i_uncommitted = 0;
 int i_voltage = 13;
-int b_tone = 0;
+int b_tone = -1;
 int i_bandwidth = 8;
 char *psz_modulation = NULL;
 int i_pilot = -1;
@@ -524,7 +524,7 @@ void usage()
     msg_Raw( NULL, "    DVB-T  qam_16|qam_32|qam_64|qam_128|qam_256 (default qam_auto)" );
     msg_Raw( NULL, "    DVB-S2 qpsk|psk_8 (default legacy DVB-S)" );
     msg_Raw( NULL, "  -n --frontend-number <frontend number>" );
-    msg_Raw( NULL, "  -p --force-pulse      force 22kHz pulses for high-band selection (DVB-S)" );
+    msg_Raw( NULL, "  -p --force-pulse <-1|0|1>  force 22kHz pulses (DVB-S)(-1 auto, 0 off, 1 on)" );
     msg_Raw( NULL, "  -7 --lnb1 <frequency> LNB 1 frequency in Mhz (default 9750)" );
     msg_Raw( NULL, "  -8 --lnb2 <frequency> LNB 2 frequency in Mhz (default 10600)" );
     msg_Raw( NULL, "  -9 --lnbs <frequency> LNB switch frequency in Mhz (default 11700)" );
@@ -669,7 +669,7 @@ int main( int i_argc, char **pp_argv )
         { 0, 0, 0, 0 }
     };
 
-    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:5:f:F:R:s:S:k:v:pb:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:y:0:1:2:7:8:9:", long_options, NULL)) != -1 )
+    while ( (c = getopt_long(i_argc, pp_argv, "q::c:r:t:o:i:a:n:5:f:F:R:s:S:k:v:p:b:I:m:P:K:G:H:X:O:uwUTL:E:d:D:A:lg:zCWYeM:N:j:J:B:x:Q:hVZ:y:0:1:2:7:8:9:", long_options, NULL)) != -1 )
     {
         switch ( c )
         {
@@ -785,7 +785,7 @@ int main( int i_argc, char **pp_argv )
             break;
 
         case 'p':
-            b_tone = 1;
+            b_tone = strtol( optarg, NULL, 0 );;
             break;
 
         case '7':
